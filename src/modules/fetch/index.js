@@ -13,8 +13,26 @@ async function register(email, password) {
     );
     return response.data;
   } catch (error) {
-    throw new Error("Internal server error!");
+    throw new Error(error.response.data.message);
   }
 }
-export {register}
 
+async function sendOtp(uid, codeOtp) {
+  try {
+    const response = await instance.post(
+      "/auth/verify-otp",
+      { uid, codeOtp },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+}
+
+
+export { register, sendOtp };

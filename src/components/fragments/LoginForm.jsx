@@ -2,15 +2,12 @@ import { Alert, Button, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { register } from "../../modules/fetch";
-import { useUid } from "../../context/UidContext";
 
-const RegisterForm = () => {
-  const { uid, setUid } = useUid();
-  const navigate = useNavigate();
+const LoginForm = () => {
+  // const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    confirmPassword: "",
   });
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -20,11 +17,11 @@ const RegisterForm = () => {
     setFormData({ ...formData, [id]: value });
   };
 
-  useEffect(() => {
-    if (uid) {
-      navigate("/otp");
-    }
-  }, [uid]);
+  // useEffect(() => {
+  //   if (email) {
+  //     navigate("/otp");
+  //   }
+  // }, [email]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,8 +32,8 @@ const RegisterForm = () => {
     }
 
     try {
-      const result = await register(formData.email, formData.password);
-      setUid(result.data.id);
+      await register(formData.email, formData.password);
+      // await setEmail(formData.email);
     } catch (err) {
       setError(true);
       setErrorMessage(`${err.message}`);
@@ -45,7 +42,7 @@ const RegisterForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="">
+    <form className="">
       <TextField
         id="email"
         label="email"
@@ -67,16 +64,6 @@ const RegisterForm = () => {
         sx={{ marginY: "1rem" }}
         placeholder="Enter your password"
       />
-      <TextField
-        id="confirmPassword"
-        label="confirmPassword"
-        variant="outlined"
-        type="password"
-        value={formData.confirmPassword}
-        onChange={handleChange}
-        className="w-full"
-        placeholder="Confirm your password"
-      />
       {error && (
         <Alert severity="error" className="my-2">
           {errorMessage}
@@ -90,4 +77,4 @@ const RegisterForm = () => {
     </form>
   );
 };
-export default RegisterForm;
+export default LoginForm;
