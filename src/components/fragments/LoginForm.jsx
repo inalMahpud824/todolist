@@ -1,7 +1,6 @@
 import { Alert, Button, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { register } from "../../modules/fetch";
+import { login } from "../../modules/fetch";
 
 const LoginForm = () => {
   // const navigate = useNavigate();
@@ -11,29 +10,27 @@ const LoginForm = () => {
   });
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [statusLogin, setStatusLogin] = useState(false);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData({ ...formData, [id]: value });
   };
 
-  // useEffect(() => {
-  //   if (email) {
-  //     navigate("/otp");
-  //   }
-  // }, [email]);
+  useEffect(() => {
+    const token = window.localStorage.getItem("token");
+    if (token) {
+      window.location.href = "/home";
+    }
+  }, [statusLogin]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      setError(true);
-      setErrorMessage("Password tidak sama");
-      return;
-    }
-
     try {
-      await register(formData.email, formData.password);
-      // await setEmail(formData.email);
+      const result = await login(formData.email, formData.password);
+      console.log(result);
+      window.localStorage.setItem("token", result.token);
+      setStatusLogin(true);
     } catch (err) {
       setError(true);
       setErrorMessage(`${err.message}`);
@@ -42,7 +39,7 @@ const LoginForm = () => {
   };
 
   return (
-    <form className="">
+    <form onSubmit={handleSubmit} className="">
       <TextField
         id="email"
         label="email"
@@ -71,7 +68,7 @@ const LoginForm = () => {
       )}
       <div className="flex justify-center mt-4">
         <Button variant="contained" size="large" type="submit">
-          Register
+          Login
         </Button>
       </div>
     </form>

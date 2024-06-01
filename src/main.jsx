@@ -6,6 +6,7 @@ import OtpInputPage from "./pages/OtpInput.jsx";
 import UidProvider from "./context/UidContext.jsx";
 import LoginPage from "./pages/Login.jsx";
 import RegisterPage from './pages/Register.jsx'
+import HomePage from "./pages/Home.jsx";
 // import EmailContextProvider from "./context/EmailContext.jsx";
 
 const router = createBrowserRouter([
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <RegisterPage />,
+  },
+  {
+    path: "/home",
+    element: <HomePage />,
   },
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(
