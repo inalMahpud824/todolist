@@ -34,5 +34,23 @@ async function sendOtp(uid, codeOtp) {
   }
 }
 
+async function login(email, password) {
+  try {
+    const response = await instance.post(
+      "/auth/login",
+      { email, password },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+}
 
-export { register, sendOtp };
+
+
+export { register, sendOtp, login };

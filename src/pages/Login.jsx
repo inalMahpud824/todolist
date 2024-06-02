@@ -4,7 +4,7 @@ import AutLayout from "../components/layouts/AutLayout";
 const LoginPage = () => {
   return (
     <>
-    <AutLayout title='Login' description='Please Enter Account'>
+    <AutLayout title='Login' description='Please Enter Account' type='login'>
       <LoginForm />
     </AutLayout>
     </>
