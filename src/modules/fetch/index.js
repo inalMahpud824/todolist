@@ -51,6 +51,64 @@ async function login(email, password) {
   }
 }
 
+async function createActivity(title) {
+  try {
+    const response = await instance.post(
+      "/activity",
+      { title },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+}
 
 
-export { register, sendOtp, login };
+async function getAllActivity() {
+  try {
+    const response = await instance.get(
+      "/activity",
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+}
+
+async function deleteActivity(id) {
+  try {
+    const response = await instance.delete(
+      `/activity/${id}`,
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+}
+
+
+async function updateActivity(id, title) {
+  try {
+    const response = await instance.put(
+      `/activity/${id}`,
+      { title },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+}
+
+
+
+export { register, sendOtp, login, createActivity, getAllActivity, deleteActivity, updateActivity };
