@@ -7,23 +7,21 @@ import {
   TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { createActivity, updateActivity } from "../../modules/fetch";
-import getToken from "../../hooks/getToken";
+import { createItem, updateItem, } from "../../modules/fetch";
+import { useParams } from "react-router-dom";
 
-function FormDialog({ onClose, activity = null }) {
+function FormDialogItem({ onClose, item = null }) {
   const [open, setOpen] = useState(true);
-  const [userId, setUserId] = useState(null)
+  const {id} = useParams()
   const [activityValue, setActivityValue] = useState(
-    activity ? activity.title : ""
+    item ? item.title : ""
   );
 
   useEffect(() => {
-    const token = getToken()
-    setUserId(token.id)
-    if (activity) {
-      setActivityValue(activity.title);
+    if (item) {
+      setActivityValue(item.title);
     }
-  }, [activity]);
+  }, [item]);
 
   const handleClose = () => {
     setOpen(onClose);
@@ -42,26 +40,25 @@ function FormDialog({ onClose, activity = null }) {
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
             const formJson = Object.fromEntries(formData.entries());
-            const newActivity = formJson.activity;
-            if (activity) {
-              // Update activity
-              await updateActivity(activity.id, newActivity);
+            const newItem = formJson.item;
+            if (item) {
+              await updateItem(item.id, item.activity_id,  newItem, item.isActive);
             } else {
               // Create new activity
-              await createActivity(newActivity, userId);
+              await createItem( id, newItem);
             }
             handleClose();
           },
         }}
       >
-        <DialogTitle>{activity ? 'Ubah Aktivitas': 'Tambah Data Aktivitas'}</DialogTitle>
+        <DialogTitle>{item ? 'Ubah Aktivitas': 'Tambah Data Aktivitas'}</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             required
             margin="dense"
-            id="activity"
-            name="activity"
+            id="item"
+            name="item"
             label="Aktivitas"
             type="text"
             fullWidth
@@ -72,11 +69,11 @@ function FormDialog({ onClose, activity = null }) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit">{activity ? 'Ubah' : 'Tambah'}</Button>
+          <Button type="submit">{item ? 'Ubah' : 'Tambah'}</Button>
         </DialogActions>
       </Dialog>
     </>
   );
 }
 
-export default FormDialog;
+export default FormDialogItem;

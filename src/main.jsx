@@ -7,6 +7,7 @@ import UidProvider from "./context/UidContext.jsx";
 import LoginPage from "./pages/Login.jsx";
 import RegisterPage from './pages/Register.jsx'
 import HomePage from "./pages/Home.jsx";
+import ActivityPage from "./pages/Activity.jsx";
 // import EmailContextProvider from "./context/EmailContext.jsx";
 
 const router = createBrowserRouter([
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
   {
     path: "/home",
     element: <HomePage />,
+  },
+  {
+    path: "/home/activity/:id",
+    element: <ActivityPage />,
   },
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(

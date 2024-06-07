@@ -2,10 +2,7 @@ import { instance } from "../axios";
 
 async function register(email, password) {
   try {
-    const response = await instance.post(
-      "/auth/register",
-      { email, password },
-    );
+    const response = await instance.post("/auth/register", { email, password });
     return response.data;
   } catch (error) {
     throw new Error(error.response.data.message);
@@ -63,12 +60,17 @@ async function createActivity(title, userId) {
   }
 }
 
-
 async function getAllActivity(id) {
   try {
-    const response = await instance.get(
-      `/activity/user/${id}`,
-    );
+    const response = await instance.get(`/activity/user/${id}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+}
+async function getActivityById(id) {
+  try {
+    const response = await instance.get(`/activity/${id}`);
     return response.data;
   } catch (error) {
     throw new Error(error.response.data.message);
@@ -77,15 +79,12 @@ async function getAllActivity(id) {
 
 async function deleteActivity(id) {
   try {
-    const response = await instance.delete(
-      `/activity/${id}`,
-    );
+    const response = await instance.delete(`/activity/${id}`);
     return response.data;
   } catch (error) {
     throw new Error(error.response.data.message);
   }
 }
-
 
 async function updateActivity(id, title) {
   try {
@@ -104,6 +103,69 @@ async function updateActivity(id, title) {
   }
 }
 
+async function getAllItems(id) {
+  try {
+    const response = await instance.get(`/items/activity/${id}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+}
 
+async function createItem(activity_id, title) {
+  try {
+    const response = await instance.post(
+      "/items",
+      { activity_id, title, isActive: true },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+}
 
-export { register, sendOtp, login, createActivity, getAllActivity, deleteActivity, updateActivity };
+async function updateItem(id, activity_id, title, isActive) {
+  try {
+    const response = await instance.put(
+      `/items/${id}`,
+      { activity_id, title, isActive},
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+}
+
+async function deleteItem(id) {
+  try {
+    const response = await instance.delete(`/items/${id}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+}
+
+export {
+  register,
+  sendOtp,
+  login,
+  createActivity,
+  getAllActivity,
+  getActivityById,
+  deleteActivity,
+  updateActivity,
+  getAllItems,
+  createItem,
+  updateItem,
+  deleteItem,
+};
