@@ -26,7 +26,7 @@ const HomePage = () => {
   };
   const getDataActivities = async () => {
     try {
-      const response = await getAllActivity(2);
+      const response = await getAllActivity(userId);
       setActivities(response.result);
     } catch (err) {
       console.log(err);
