@@ -4,8 +4,10 @@ import HeaderBar from "../components/Navbar";
 import { useEffect, useState } from "react";
 import FormDialog from "../components/fragments/ActivityForm";
 import { deleteActivity, getAllActivity } from "../modules/fetch";
+import getToken from "../hooks/getToken";
 
 const HomePage = () => {
+  const [userId, setUserId] = useState(null)
   const [openFormDialog, setOpenFormDialog] = useState(false);
   const [activities, setActivities] = useState([]);
   const [selectedActivity, setSelectedActivity] = useState(null);
@@ -23,16 +25,24 @@ const HomePage = () => {
   };
   const getDataActivities = async () => {
     try {
-      const response = await getAllActivity();
+      const response = await getAllActivity(2);
       setActivities(response.result);
     } catch (err) {
       console.log(err);
     }
   };
-
+  
   useEffect(() => {
     getDataActivities();
   }, [openFormDialog]);
+
+  useEffect(()=> {
+    const decodeToken = getToken()
+    setUserId(decodeToken.id)
+    if(userId){
+      getDataActivities();
+    }
+  },[])
   return (
     <>
       <HeaderBar />

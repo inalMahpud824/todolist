@@ -5,11 +5,6 @@ async function register(email, password) {
     const response = await instance.post(
       "/auth/register",
       { email, password },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
     );
     return response.data;
   } catch (error) {
@@ -51,11 +46,11 @@ async function login(email, password) {
   }
 }
 
-async function createActivity(title) {
+async function createActivity(title, userId) {
   try {
     const response = await instance.post(
       "/activity",
-      { title },
+      { title, userId },
       {
         headers: {
           "Content-Type": "application/json",
@@ -69,10 +64,10 @@ async function createActivity(title) {
 }
 
 
-async function getAllActivity() {
+async function getAllActivity(id) {
   try {
     const response = await instance.get(
-      "/activity",
+      `/activity/user/${id}`,
     );
     return response.data;
   } catch (error) {
