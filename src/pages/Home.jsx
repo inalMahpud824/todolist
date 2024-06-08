@@ -39,11 +39,14 @@ const HomePage = () => {
 
   useEffect(() => {
     const decodeToken = getToken();
+    if(!decodeToken){
+      window.location.href = '/'
+    }
     setUserId(decodeToken.id);
     if (userId) {
       getDataActivities();
     }
-  }, []);
+  }, [userId]);
   return (
     <>
       <HeaderBar />
