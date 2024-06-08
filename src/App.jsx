@@ -1,9 +1,11 @@
-import Navbar from "./components/Navbar"
+// import Navbar from "./components/Navbar"
+import Register from "./pages/Register"
 
 const App = () => {
   return(
     <>
-      <Navbar />
+      {/* <Navbar /> */}
+      <Register />
     </>
   )
 }
