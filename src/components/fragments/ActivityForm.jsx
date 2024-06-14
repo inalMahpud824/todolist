@@ -1,5 +1,6 @@
 import {
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -12,14 +13,15 @@ import getToken from "../../hooks/getToken";
 
 function FormDialog({ onClose, activity = null }) {
   const [open, setOpen] = useState(true);
-  const [userId, setUserId] = useState(null)
+  const [userId, setUserId] = useState(null);
   const [activityValue, setActivityValue] = useState(
     activity ? activity.title : ""
   );
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const token = getToken()
-    setUserId(token.id)
+    const token = getToken();
+    setUserId(token.id);
     if (activity) {
       setActivityValue(activity.title);
     }
@@ -44,36 +46,49 @@ function FormDialog({ onClose, activity = null }) {
             const formJson = Object.fromEntries(formData.entries());
             const newActivity = formJson.activity;
             if (activity) {
+              setLoading(true);
               // Update activity
               await updateActivity(activity.id, newActivity);
             } else {
+              setLoading(true);
               // Create new activity
               await createActivity(newActivity, userId);
+              setLoading(false);
             }
             handleClose();
           },
         }}
       >
-        <DialogTitle>{activity ? 'Ubah Aktivitas': 'Tambah Data Aktivitas'}</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="activity"
-            name="activity"
-            label="Aktivitas"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={activityValue}
-            onChange={(e) => setActivityValue(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit">{activity ? 'Ubah' : 'Tambah'}</Button>
-        </DialogActions>
+        <DialogTitle>
+          {activity ? "Ubah Aktivitas" : "Tambah Data Aktivitas"}
+        </DialogTitle>
+        {loading ? (
+          <div className="w-full flex justify-center p-7">
+            <CircularProgress />
+          </div>
+        ) : (
+          <>
+            <DialogContent>
+              <TextField
+                autoFocus
+                required
+                margin="dense"
+                id="activity"
+                name="activity"
+                label="Aktivitas"
+                type="text"
+                fullWidth
+                variant="standard"
+                value={activityValue}
+                onChange={(e) => setActivityValue(e.target.value)}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>Cancel</Button>
+              <Button type="submit">{activity ? "Ubah" : "Tambah"}</Button>
+            </DialogActions>
+          </>
+        )}
       </Dialog>
     </>
   );

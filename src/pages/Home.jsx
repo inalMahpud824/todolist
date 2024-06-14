@@ -1,4 +1,9 @@
-import { Button, IconButton, Typography } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  IconButton,
+  Typography,
+} from "@mui/material";
 import { DeleteOutline, EditNote } from "@mui/icons-material";
 import HeaderBar from "../components/Navbar";
 import { useEffect, useState } from "react";
@@ -12,12 +17,14 @@ const HomePage = () => {
   const [openFormDialog, setOpenFormDialog] = useState(false);
   const [activities, setActivities] = useState([]);
   const [selectedActivity, setSelectedActivity] = useState(null);
+  const [loading, setLoading] = useState(false);
   const handleFormDialog = (activity = null) => {
     setSelectedActivity(activity);
     setOpenFormDialog(!openFormDialog);
   };
   const handleDeleteActivity = async (id) => {
     try {
+      setLoading(true)
       await deleteActivity(id);
       getDataActivities();
     } catch (err) {
@@ -26,8 +33,10 @@ const HomePage = () => {
   };
   const getDataActivities = async () => {
     try {
+      setLoading(true);
       const response = await getAllActivity(userId);
       setActivities(response.result);
+      setLoading(false);
     } catch (err) {
       console.log(err);
     }
@@ -39,14 +48,15 @@ const HomePage = () => {
 
   useEffect(() => {
     const decodeToken = getToken();
-    if(!decodeToken){
-      window.location.href = '/'
+    if (!decodeToken) {
+      window.location.href = "/";
     }
     setUserId(decodeToken.id);
     if (userId) {
       getDataActivities();
     }
   }, [userId]);
+
   return (
     <>
       <HeaderBar />
@@ -63,30 +73,41 @@ const HomePage = () => {
         </Button>
       </div>
       <div className="flex items-center flex-wrap gap-4 px-4">
-        {activities &&
+        {loading ? (
+          <div className="min-h-screen flex w-full items-center justify-center">
+            <CircularProgress />
+          </div>
+        ) : (
+          activities &&
           activities.map((activity) => (
-            <div key={activity.id} className="w-full p-4 rounded-md shadow-md hover:bg-slate-200 cursor-pointer active:bg-slate-100 transition-colors duration-300 ease-in-out lg:w-[18.5rem] ">
-                <Link to={`/home/activity/${activity.id}`}>
-                <h1 className="text-xl font-semibold hover:text-blue-700 hover:underline hover:text-2xl">{activity.title}</h1>
-                </Link>
-                <div className="flex justify-end">
-                  <IconButton
-                    color="error"
-                    onClick={() => handleDeleteActivity(activity.id)}
-                    sx={{ ":hover": { backgroundColor: "lightsalmon" } }}
-                  >
-                    <DeleteOutline />
-                  </IconButton>
-                  <IconButton
-                    color="primary"
-                    onClick={() => handleFormDialog(activity)}
-                    sx={{ ":hover": { backgroundColor: "lightblue" } }}
-                  >
-                    <EditNote />
-                  </IconButton>
-                </div>
+            <div
+              key={activity.id}
+              className="w-full p-4 rounded-md shadow-md hover:bg-slate-200 cursor-pointer active:bg-slate-100 transition-colors duration-300 ease-in-out lg:w-[18.5rem] "
+            >
+              <Link to={`/home/activity/${activity.id}`}>
+                <h1 className="text-xl font-semibold hover:text-blue-700 hover:underline hover:text-2xl">
+                  {activity.title}
+                </h1>
+              </Link>
+              <div className="flex justify-end">
+                <IconButton
+                  color="error"
+                  onClick={() => handleDeleteActivity(activity.id)}
+                  sx={{ ":hover": { backgroundColor: "lightsalmon" } }}
+                >
+                  <DeleteOutline />
+                </IconButton>
+                <IconButton
+                  color="primary"
+                  onClick={() => handleFormDialog(activity)}
+                  sx={{ ":hover": { backgroundColor: "lightblue" } }}
+                >
+                  <EditNote />
+                </IconButton>
               </div>
-          ))}
+            </div>
+          ))
+        )}
       </div>
       {openFormDialog && (
         <FormDialog onClose={handleFormDialog} activity={selectedActivity} />

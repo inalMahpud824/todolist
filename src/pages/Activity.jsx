@@ -1,7 +1,18 @@
-import { Button, Checkbox, IconButton, Typography } from "@mui/material";
+import {
+  Button,
+  Checkbox,
+  CircularProgress,
+  IconButton,
+  Typography,
+} from "@mui/material";
 import HeaderBar from "../components/Navbar";
 import { useEffect, useState } from "react";
-import { deleteItem, getActivityById, getAllItems, updateItem } from "../modules/fetch";
+import {
+  deleteItem,
+  getActivityById,
+  getAllItems,
+  updateItem,
+} from "../modules/fetch";
 import { DeleteOutline, EditNote, ArrowBackIosNew } from "@mui/icons-material";
 import { Link, useParams } from "react-router-dom";
 import getToken from "../hooks/getToken";
@@ -14,6 +25,7 @@ const ActivityPage = () => {
   const [items, setItems] = useState([]);
   const [activity, setActivity] = useState({});
   const [selectedItem, setSelectedItem] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleFormDialog = (item = null) => {
     setSelectedItem(item);
@@ -22,12 +34,14 @@ const ActivityPage = () => {
 
   const handleCheckBox = async (itemId, activityId, title, isActive) => {
     try {
+      setLoading(true)
       await updateItem(itemId, activityId, title, !isActive);
       setItems((prevItems) =>
         prevItems.map((item) =>
           item.id === itemId ? { ...item, isActive: !isActive } : item
-        )
+      )
       );
+    setLoading(false)
     } catch (err) {
       console.log(err);
     }
@@ -35,8 +49,10 @@ const ActivityPage = () => {
 
   const handelDeleteItem = async (itemId) => {
     try {
+      setLoading(true)
       await deleteItem(itemId);
       getDataItems(id);
+      setLoading(false)
     } catch (err) {
       console.log(err);
     }
@@ -44,8 +60,10 @@ const ActivityPage = () => {
 
   const getDataItems = async (id) => {
     try {
+      setLoading(true)
       const response = await getAllItems(id);
       setItems(response.result);
+      setLoading(false)
     } catch (err) {
       console.log(err);
     }
@@ -79,11 +97,11 @@ const ActivityPage = () => {
 
       <div className="flex justify-between mx-6 mb-7">
         <div className="flex items-center">
-        <Link to="/home">
-          <IconButton>
-            <ArrowBackIosNew />
-          </IconButton>
-        </Link>
+          <Link to="/home">
+            <IconButton>
+              <ArrowBackIosNew />
+            </IconButton>
+          </Link>
           {activity && (
             <h1 className="text-2xl font-semibold ">{activity.title}</h1>
           )}
@@ -98,7 +116,12 @@ const ActivityPage = () => {
         </Button>
       </div>
       <div className="mx-auto w-[70%] p-0">
-        {items &&
+        {loading ? (
+          <div className="min-h-screen flex w-full items-center justify-center">
+            <CircularProgress />
+          </div>
+        ) : (
+          items &&
           items.map((item) => (
             <div
               key={item.id}
@@ -141,7 +164,8 @@ const ActivityPage = () => {
                 </IconButton>
               </div>
             </div>
-          ))}
+          ))
+        )}
       </div>
       {openFormDialog && (
         <FormDialogItem onClose={handleFormDialog} item={selectedItem} />
