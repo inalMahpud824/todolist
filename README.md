@@ -18,6 +18,7 @@ Anda dapat melihat demo aplikasi [di sini](https://todolist-red-gamma.vercel.app
 - React
 - Vite
 - Tailwind CSS
+- MUI 
 
 ## Instalasi
 
